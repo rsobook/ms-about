@@ -1,0 +1,206 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'com.bmuschko:gradle-docker-plugin:3.2.0'
+    }
+}
+
+group 'si.fri.rsobook'
+version '1.0'
+
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'com.bmuschko.docker-remote-api'
+
+sourceCompatibility = 1.8
+
+ext {
+    dockerHubUser =  project.hasProperty('DOCKER_HUB_USER') ? DOCKER_HUB_USER : System.getenv('DOCKER_HUB_USER')
+    dockerHubEmail =  project.hasProperty('DOCKER_HUB_EMAIL') ? DOCKER_HUB_EMAIL : System.getenv('DOCKER_HUB_EMAIL')
+    dockerHubPassword =  project.hasProperty('DOCKER_HUB_PASSWORD') ? DOCKER_HUB_PASSWORD : System.getenv('DOCKER_HUB_PASSWORD')
+
+    port = "8080" // set new port unique for docker
+    dockerHostname = "chatrelay.rsobook.fri.si"
+    dockerImageName = String.format("%s/%s", dockerHubUser, project.name)
+    dockerImageTag = String.format("%s:%s", dockerImageName, version)
+    dockerContainerName = String.format("%s", project.name)
+}
+
+repositories {
+    mavenCentral()
+    maven {
+        url 'https://box.kisek.si/nexus/repository/maven-releases'
+    }
+    maven {
+        url 'https://oss.sonatype.org/content/repositories/snapshots'
+    }
+}
+
+dependencies {
+
+    compile group: 'si.fri.rsobook', name: 'lib.core', version: '1.2.2'
+
+    compile group: "com.kumuluz.ee", name: 'kumuluzee-core', version: '2.5.0-SNAPSHOT'
+    compile group: "com.kumuluz.ee", name: 'kumuluzee-cdi-weld', version: '2.5.0-SNAPSHOT'
+    compile group: "com.kumuluz.ee", name: 'kumuluzee-servlet-jetty', version: '2.5.0-SNAPSHOT'
+    compile group: "com.kumuluz.ee", name: 'kumuluzee-jax-rs-jersey', version: '2.5.0-SNAPSHOT'
+
+    compile group: "com.kumuluz.ee.config", name: "kumuluzee-config-etcd", version: '1.1.0-SNAPSHOT'
+    compile group: 'com.kumuluz.ee.discovery', name: 'kumuluzee-discovery-etcd', version:'1.0.0-SNAPSHOT'
+
+    compile group: 'com.kumuluz.ee.health', name: 'kumuluzee-health', version:'1.0.0-SNAPSHOT'
+
+    compile group: 'com.kumuluz.ee.metrics', name: 'kumuluzee-metrics-core', version:'1.0.0-SNAPSHOT'
+    compile group: 'com.kumuluz.ee.metrics', name: 'kumuluzee-metrics-logs', version:'1.0.0-SNAPSHOT'
+
+    compile group: 'com.kumuluz.ee.logs', name: 'kumuluzee-logs-log4j2', version: '1.3.0-SNAPSHOT'
+
+    compile group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.12'
+
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}
+
+
+/**
+ * KUMULUZEE TASKS
+ */
+
+task buildKumuluzEE(type: Jar){
+    group 'kumuluzee'
+    dependsOn assemble
+
+    into('lib') { from configurations.compile }
+    from project.projectDir.path + "/build-dependency/jar"
+    from "src/main/resources"
+    from "build/classes/java/main"
+
+    manifest { attributes("Main-Class": "com.kumuluz.ee.loader.EeBootLoader") }
+
+    archivesBaseName = project.name
+    destinationDir = file("$rootDir/build/kumuluzee")
+}
+
+task runKumuluzEE(type: JavaExec) {
+    group 'kumuluzee'
+    dependsOn buildKumuluzEE
+
+    environment('PORT', '8080')
+
+    main = "-jar"
+    args buildKumuluzEE.archivePath.path
+}
+
+/**
+ * DOCKER TASKS
+ */
+
+import com.bmuschko.gradle.docker.tasks.container.*
+import com.bmuschko.gradle.docker.tasks.image.*
+
+docker {
+    registryCredentials {
+        url = 'https://hub.docker.com/'
+        username = dockerHubUser
+        email = dockerHubEmail
+        password = dockerHubPassword
+    }
+}
+
+task dockerfileCreate(type: Dockerfile) {
+    group 'docker'
+    destFile = project.file('build/kumuluzee/Dockerfile')
+    from 'openjdk:8-jdk'
+    maintainer 'Jan Gasperlin "jg1724@student.uni-lj.si"'
+
+    environmentVariable("PORT", port)
+
+    exposePort {
+        port
+    }
+
+    addFile(buildKumuluzEE.archiveName, "/usr/local/bin/kumuluzee/")
+    defaultCommand("java", "-jar", "/usr/local/bin/kumuluzee/" + buildKumuluzEE.archiveName)
+}
+
+task dockerfileCopyScript(type: Copy){
+    group 'docker'
+    from project.projectDir.path + "/build-dependency/run.sh"
+    from project.projectDir.path + "/build-dependency/config.yaml"
+    into dockerfileCreate.destFile.parentFile
+}
+
+task containerStop(type: DockerStopContainer) {
+    group 'docker'
+    targetContainerId {
+        dockerContainerName
+    }
+    onError {
+        error -> println error.toString()
+    }
+}
+
+task containerRemove(type: DockerRemoveContainer) {
+    group 'docker'
+    dependsOn containerStop
+    targetContainerId {
+        dockerContainerName
+    }
+    onError {
+        error -> println error.toString()
+    }
+}
+
+task imageRemove(type: DockerRemoveImage) {
+    group 'docker'
+    dependsOn containerRemove
+    imageId dockerImageTag
+    onError {
+        error -> println error.toString()
+    }
+}
+
+task imageBuild(type: DockerBuildImage) {
+    group 'docker'
+    dependsOn imageRemove
+    dependsOn dockerfileCreate
+    dependsOn dockerfileCopyScript
+    dependsOn buildKumuluzEE
+    inputDir = dockerfileCreate.destFile.parentFile
+    tag = dockerImageTag
+    //noCache = true
+}
+
+task imagePushToDockerHub(type: DockerPushImage){
+    group 'docker'
+    imageName = dockerImageTag
+    tag = version
+}
+
+task containerCreate(type: DockerCreateContainer) {
+    group 'docker'
+    dependsOn imageBuild
+    targetImageId {
+        dockerImageTag
+    }
+    containerName = dockerContainerName
+    portBindings = [String.format("5%s:%s", port, port)]
+    hostName = dockerHostname
+    network = 'rsonetwork'
+}
+
+task containerStart(type: DockerStartContainer) {
+    group 'docker'
+    targetContainerId {
+        dockerContainerName
+    }
+}
+
+task dockerBootstrap() {
+    group 'docker'
+    dependsOn containerCreate
+    dependsOn containerStart
+    containerCreate.finalizedBy containerStart
+}

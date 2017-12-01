@@ -1,0 +1,24 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: ms-about
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: ms-about
+    spec:
+      containers:
+        - image: rsobook/ms-about:2.0.0
+          name: ms-about
+          env:
+            - name: PORT
+              value: '80'
+            - name: KUMULUZEE_DISCOVERY_ETCD_HOSTS
+              value: http://ms-etcd:2379
+            - name: KUMULUZEE_CONFIG_ETCD_HOSTS
+              value: http://ms-etcd:2379
+          ports:
+          - containerPort: 80
+            protocol: TCP
