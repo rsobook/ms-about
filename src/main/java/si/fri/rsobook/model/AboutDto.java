@@ -22,6 +22,7 @@ public class AboutDto {
                 "http://169.51.17.164:31055/api/v1/User",
                 "http://169.51.17.164:31055/api/v1/Images",
                 "http://169.51.17.164:31055/api/v1/ChatRoom",
+                "http://169.51.17.164:31055/api/v1/Ads",
                 "http://169.51.17.164:31055/api/v1/Wall",
                 "http://169.51.17.164:31055/api/v1/Pet",
                 "http://169.51.17.164:31055/api/v1/Friends",
