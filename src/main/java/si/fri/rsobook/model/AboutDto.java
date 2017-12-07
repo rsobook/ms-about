@@ -13,12 +13,11 @@ public class AboutDto {
     public static AboutDto build(){
         AboutDto aboutDto = new AboutDto();
 
-        aboutDto.clani = new String[] {"jg17", "nk4741"};
+        aboutDto.clani = new String[] {"jg1724", "nk4741"};
         aboutDto.opis_projekta = "Rsobook (Facebook), implementacija vsebuje prijatelje, zid in klepetalnice";
 
         aboutDto.mikrostoritve = new String[] {
                 "http://169.51.17.164:31055/api/v1/About",
-                "http://169.51.17.164:31055/api/v1/ChatRelay",
                 "http://169.51.17.164:31055/api/v1/User",
                 "http://169.51.17.164:31055/api/v1/Images",
                 "http://169.51.17.164:31055/api/v1/ChatRoom",
@@ -30,7 +29,6 @@ public class AboutDto {
 
         aboutDto.github = new String[] {
                 "https://github.com/rsobook/ms-about",
-                "https://github.com/rsobook/ms-chatrelay",
                 "https://github.com/rsobook/ms-user",
                 "https://github.com/rsobook/ms-images",
                 "https://github.com/rsobook/ms-chatroom",
@@ -42,7 +40,6 @@ public class AboutDto {
 
         aboutDto.travis = new String[] {
                 "https://travis-ci.org/rsobook/ms-about",
-                "https://travis-ci.org/rsobook/ms-chatrelay",
                 "https://travis-ci.org/rsobook/ms-user",
                 "https://travis-ci.org/rsobook/ms-images",
                 "https://travis-ci.org/rsobook/ms-chatroom",
@@ -54,7 +51,6 @@ public class AboutDto {
 
         aboutDto.dockerhub = new String[] {
                 "https://travis-ci.org/rsobook/ms-about",
-                "https://travis-ci.org/rsobook/ms-chatrelay",
                 "https://travis-ci.org/rsobook/ms-user",
                 "https://travis-ci.org/rsobook/ms-images",
                 "https://travis-ci.org/rsobook/ms-chatroom",
