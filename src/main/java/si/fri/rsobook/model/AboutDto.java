@@ -19,7 +19,6 @@ public class AboutDto {
         aboutDto.mikrostoritve = new String[] {
                 "http://169.51.17.164:31055/api/v1/About",
                 "http://169.51.17.164:31055/api/v1/User",
-                "http://169.51.17.164:31055/api/v1/Images",
                 "http://169.51.17.164:31055/api/v1/ChatRoom",
                 "http://169.51.17.164:31055/api/v1/Ads",
                 "http://169.51.17.164:31055/api/v1/Wall",
@@ -30,7 +29,6 @@ public class AboutDto {
         aboutDto.github = new String[] {
                 "https://github.com/rsobook/ms-about",
                 "https://github.com/rsobook/ms-user",
-                "https://github.com/rsobook/ms-images",
                 "https://github.com/rsobook/ms-chatroom",
                 "https://github.com/rsobook/ms-ads",
                 "https://github.com/rsobook/ms-wall",
@@ -41,7 +39,6 @@ public class AboutDto {
         aboutDto.travis = new String[] {
                 "https://travis-ci.org/rsobook/ms-about",
                 "https://travis-ci.org/rsobook/ms-user",
-                "https://travis-ci.org/rsobook/ms-images",
                 "https://travis-ci.org/rsobook/ms-chatroom",
                 "https://travis-ci.org/rsobook/ms-ads",
                 "https://travis-ci.org/rsobook/ms-wall",
@@ -52,7 +49,6 @@ public class AboutDto {
         aboutDto.dockerhub = new String[] {
                 "https://travis-ci.org/rsobook/ms-about",
                 "https://travis-ci.org/rsobook/ms-user",
-                "https://travis-ci.org/rsobook/ms-images",
                 "https://travis-ci.org/rsobook/ms-chatroom",
                 "https://travis-ci.org/rsobook/ms-ads",
                 "https://travis-ci.org/rsobook/ms-wall",
