@@ -10,7 +10,7 @@ spec:
         app: ms-about
     spec:
       containers:
-        - image: rsobook/ms-about:2.0.3
+        - image: rsobook/ms-about:2.0.4
           name: ms-about
           env:
             - name: PORT
