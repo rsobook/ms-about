@@ -17,13 +17,14 @@ public class AboutDto {
         aboutDto.opis_projekta = "Rsobook (Facebook), implementacija vsebuje prijatelje, zid in klepetalnice";
 
         aboutDto.mikrostoritve = new String[] {
-                "http://169.51.17.164:31055/api/v1/About",
-                "http://169.51.17.164:31055/api/v1/User",
-                "http://169.51.17.164:31055/api/v1/ChatRoom",
-                "http://169.51.17.164:31055/api/v1/Ads",
-                "http://169.51.17.164:31055/api/v1/Wall",
-                "http://169.51.17.164:31055/api/v1/Pet",
-                "http://169.51.17.164:31055/api/v1/Friends",
+                "http://35.227.212.106/api/v1/About",
+                "http://35.227.212.106/api/v1/User",
+                "http://35.227.212.106/api/v1/ChatRoom",
+                "http://35.227.212.106/api/v1/Ads",
+                "http://35.227.212.106/api/v1/Wall",
+                "http://35.227.212.106/api/v1/Pet",
+                "http://35.227.212.106/api/v1/Images",
+                "http://35.227.212.106/api/v1/Friends",
         };
 
         aboutDto.github = new String[] {
@@ -33,6 +34,7 @@ public class AboutDto {
                 "https://github.com/rsobook/ms-ads",
                 "https://github.com/rsobook/ms-wall",
                 "https://github.com/rsobook/ms-pet",
+                "https://github.com/rsobook/ms-images",
                 "https://github.com/rsobook/ms-friends"
         };
 
@@ -43,6 +45,7 @@ public class AboutDto {
                 "https://travis-ci.org/rsobook/ms-ads",
                 "https://travis-ci.org/rsobook/ms-wall",
                 "https://travis-ci.org/rsobook/ms-pet",
+                "https://travis-ci.org/rsobook/ms-images",
                 "https://travis-ci.org/rsobook/ms-friends"
         };
 
@@ -53,6 +56,7 @@ public class AboutDto {
                 "https://travis-ci.org/rsobook/ms-ads",
                 "https://travis-ci.org/rsobook/ms-wall",
                 "https://travis-ci.org/rsobook/ms-pet",
+                "https://travis-ci.org/rsobook/ms-images",
                 "https://travis-ci.org/rsobook/ms-friends"
         };
 
